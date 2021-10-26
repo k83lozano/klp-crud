@@ -13,14 +13,13 @@ import {
 
 const db = getFirestore(app);
 
-//Element Form
+//Form Element
 const taskForm = document.getElementById("task-form");
 const taskTitle = document.getElementById("task-title");
 const taskDes = document.getElementById("task-description");
 
 // Card Element
 const taskCard = document.getElementById("task-card");
-
 //Update Flag
 let editStatus = false;
 let id = "";
@@ -52,7 +51,7 @@ taskForm.addEventListener("submit", async (e) => {
     taskForm["btn-task-form"].innerText = "Save";
   }
 
-  await saveTask(title, description);
+  await getTasks();
 
   taskForm.reset();
   taskTitle.focus();
@@ -61,10 +60,8 @@ taskForm.addEventListener("submit", async (e) => {
 //READ Section
 const getTasks = () => getDocs(collection(db, "tasks"));
 const onGetTasks = (callback) => onSnapshot(collection(db, "tasks"), callback);
-
 //Delete Section
 const deleteTask = (id) => deleteDoc(doc(db, "tasks", id));
-
 //UPDATE Section
 const getTask = (id) => getDoc(doc(db, "tasks", id));
 const updateTask = (id, updateTask) =>
@@ -81,21 +78,21 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       task.id = doc.id;
 
       taskCard.innerHTML += `<div class="card card-body mt-2 
-          border-primary">
-          <h3 class="h5"> ${task.title}</h3>
-          <p> ${task.description}</p>
-          <div>
-              <button class="btn btn-primary btn-delete" data-id="${task.id}"> Delete </buttton>
-              <button class="btn btn-secondary btn-edit" data-id="${task.id}"> Edit </buttton>
-          </div>
-          </div>`;
+            border-primary">
+            <h3 class="h5"> ${task.title}</h3>
+            <p> ${task.description}</p>
+            <div>
+                <button class="btn btn-danger btn-delete" data-id="${task.id}"> Delete </buttton>
+                <button class="btn btn-primary btn-edit" data-id="${task.id}"> Edit </buttton>
+            </div>
+            </div>`;
       //DELETE SECTION
+
       const btnsDelete = document.querySelectorAll(".btn-delete");
       btnsDelete.forEach((btn) => {
-        btn.addEventListener(
-          "click",
-          async (e) => await deleteTask(e.target.dataset.id)
-        );
+        btn.addEventListener("click", async (e) => {
+          await deleteTask(e.target.dataset.id);
+        });
       });
       //UPDATE SECTION
       const btnsEdit = document.querySelectorAll(".btn-edit");
